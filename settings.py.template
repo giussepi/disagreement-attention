@@ -113,79 +113,86 @@ CT82_TEST_PATH = os.path.join(PROJECT_PATH, 'CT-82-Pro', 'test')
 #                                    LiTS17                                   #
 ###############################################################################
 
-LITS17_SIZE = [368, 368, -1]  # [height, width, scans]
-LITS17_CROP_SHAPE = [32, 80, 80]  # [scans, heigh, width]
-LITS17_NUM_CROPS = 1
-LITS17_TRANSFORMS = {
-    'train': ts.Compose([
-        ts.ToTensord(keys=['img', 'mask']),
-        # comment for LiTS17CropDataset
-        ts.CropForegroundd(keys=['img', 'mask'], source_key='img', select_fn=lambda x: x > .5),
-        ts.RandAxisFlipd(keys=['img', 'mask'], prob=.5),
-        # comment for LiTS17CropDataset
-        ts.RandAffined(
-            keys=['img', 'mask'],
-            prob=1.,
-            rotate_range=0.261799,  # 15 degrees
-            # comment for LiTS17CropDataset
-            translate_range=[0.1*LITS17_SIZE[2], 0.1*LITS17_SIZE[0], 0.1*LITS17_SIZE[1]],
-            # comment for LiTS17CropDataset
-            scale_range=((-0.3,  0.3), (-0.3, 0.3), (-0.3, 0.3)),
-            # uncomment for LiTS17CropDataset
-            # scale_range=((-0.3, 0), (-0.3, 0), (-0.3, 0)),
-            mode=["bilinear", "nearest"]
-        ),
-        # comment for LiTS17CropDataset
-        ts.RandCropByLabelClassesd(
-            keys=['img', 'mask'],
-            label_key='mask',
-            spatial_size=LITS17_CROP_SHAPE,
-            ratios=[.5, .5],  # [0, 1],
-            num_classes=2,
-            num_samples=LITS17_NUM_CROPS,
-            image_key='img',  # 'mask',
-            image_threshold=0.38,  # 0,
-        ),
-    ]),
-    'valtest': ts.Compose([
-        ts.ToTensord(keys=['img', 'mask']),
-        # comment for LiTS17CropDataset
-        ts.CropForegroundd(keys=['img', 'mask'], source_key='img', select_fn=lambda x: x > .5),
-        # comment for LiTS17CropDataset
-        ts.RandCropByLabelClassesd(
-            keys=['img', 'mask'],
-            label_key='mask',
-            spatial_size=LITS17_CROP_SHAPE,
-            ratios=[0, 1],
-            num_classes=2,
-            num_samples=LITS17_NUM_CROPS,
-            image_key='mask',
-            image_threshold=0,
-        ),
-    ])
-}
-LITS17_TRAIN_PATH = os.path.join(PROJECT_PATH, 'LiTS17-Pro', 'train')
-LITS17_VAL_PATH = os.path.join(PROJECT_PATH, 'LiTS17-Pro', 'val')
-LITS17_TEST_PATH = os.path.join(PROJECT_PATH, 'LiTS17-Pro', 'test')
-
-
-# example using LITS17 16-crop dataset ########################################
+# LITS17 1 32x80x80-crops dataset #############################################
 
 # LITS17_SIZE = [368, 368, -1]  # [height, width, scans]
-# LITS17_CROP_SHAPE = [32, 160, 160]  # [32, 80, 80]
-# LITS17_NUM_CROPS = 16
+# LITS17_CROP_SHAPE = [32, 80, 80]  # [scans, heigh, width]
+# LITS17_NUM_CROPS = 1
 # LITS17_TRANSFORMS = {
 #     'train': ts.Compose([
 #         ts.ToTensord(keys=['img', 'mask']),
+#         # comment for LiTS17CropDataset
+#         ts.CropForegroundd(keys=['img', 'mask'], source_key='img', select_fn=lambda x: x > .5),
 #         ts.RandAxisFlipd(keys=['img', 'mask'], prob=.5),
+#         # comment for LiTS17CropDataset
+#         ts.RandAffined(
+#             keys=['img', 'mask'],
+#             prob=1.,
+#             rotate_range=0.261799,  # 15 degrees
+#             # comment for LiTS17CropDataset
+#             translate_range=[0.1*LITS17_SIZE[2], 0.1*LITS17_SIZE[0], 0.1*LITS17_SIZE[1]],
+#             # comment for LiTS17CropDataset
+#             scale_range=((-0.3,  0.3), (-0.3, 0.3), (-0.3, 0.3)),
+#             # uncomment for LiTS17CropDataset
+#             # scale_range=((-0.3, 0), (-0.3, 0), (-0.3, 0)),
+#             mode=["bilinear", "nearest"]
+#         ),
+#         # comment for LiTS17CropDataset
+#         ts.RandCropByLabelClassesd(
+#             keys=['img', 'mask'],
+#             label_key='mask',
+#             spatial_size=LITS17_CROP_SHAPE,
+#             ratios=[.5, .5],  # [0, 1],
+#             num_classes=2,
+#             num_samples=LITS17_NUM_CROPS,
+#             image_key='img',  # 'mask',
+#             image_threshold=0.38,  # 0,
+#         ),
 #     ]),
 #     'valtest': ts.Compose([
 #         ts.ToTensord(keys=['img', 'mask']),
+#         # comment for LiTS17CropDataset
+#         ts.CropForegroundd(keys=['img', 'mask'], source_key='img', select_fn=lambda x: x > .5),
+#         # comment for LiTS17CropDataset
+#         ts.RandCropByLabelClassesd(
+#             keys=['img', 'mask'],
+#             label_key='mask',
+#             spatial_size=LITS17_CROP_SHAPE,
+#             ratios=[0, 1],
+#             num_classes=2,
+#             num_samples=LITS17_NUM_CROPS,
+#             image_key='mask',
+#             image_threshold=0,
+#         ),
 #     ])
 # }
-# LITS17_TRAIN_PATH = os.path.join(PROJECT_PATH, 'LiTS17Lesion-Pro-16PositiveCrops32x160x160', 'train')
-# LITS17_VAL_PATH = os.path.join(PROJECT_PATH, 'LiTS17Lesion-Pro-16PositiveCrops32x160x160', 'val')
-# LITS17_TEST_PATH = os.path.join(PROJECT_PATH, 'LiTS17Lesion-Pro-16PositiveCrops32x160x160', 'test')
+# LITS17_TRAIN_PATH = os.path.join(PROJECT_PATH, 'LiTS17-Pro', 'train')
+# LITS17_VAL_PATH = os.path.join(PROJECT_PATH, 'LiTS17-Pro', 'val')
+# LITS17_TEST_PATH = os.path.join(PROJECT_PATH, 'LiTS17-Pro', 'test')
+
+
+# LITS17 16 32x160x160-crops dataset ###########################################
+
+# NOTE: update the following line to reflect the locations of the datasets (created or to be created)
+# set it to PROJECT_PATH if the datasets are or will be in the project root directory
+LITS17_SAVING_PATH = os.path.join(os.sep, 'media', 'giussepi', 'TOSHIBA EXT')
+LITS17_NEW_DB_NAME = 'LiTS17Lesion-Pro'  # processed lits17 lesion dataset name
+LITS17_NEW_CROP_DB_NAME = 'LiTS17Lesion-Pro-16PositiveCrops32x160x160'  # crop lits17 lesion dataset name
+LITS17_SIZE = (368, 368, -2)  # [height, width, scans]
+LITS17_CROP_SHAPE = (32, 160, 160)
+LITS17_NUM_CROPS = 16
+LITS17_TRANSFORMS = {
+    'train': ts.Compose([
+        ts.ToTensord(keys=['img', 'mask']),
+        ts.RandAxisFlipd(keys=['img', 'mask'], prob=.5),
+    ]),
+    'valtest': ts.Compose([
+        ts.ToTensord(keys=['img', 'mask']),
+    ])
+}
+LITS17_TRAIN_PATH = os.path.join(LITS17_SAVING_PATH, LITS17_NEW_CROP_DB_NAME, 'train')
+LITS17_VAL_PATH = os.path.join(LITS17_SAVING_PATH, LITS17_NEW_CROP_DB_NAME, 'val')
+LITS17_TEST_PATH = os.path.join(LITS17_SAVING_PATH, LITS17_NEW_CROP_DB_NAME, 'test')
 
 
 ###############################################################################

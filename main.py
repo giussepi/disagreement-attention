@@ -372,10 +372,11 @@ def main():
     ###########################################################################
     #                        LiTS17 ONLY LESION DATASET                       #
     ###########################################################################
-    # hereee
     # only lesion #############################################################
+    # list17_only_lesion_saving_path = '/media/giussepi/TOSHIBA EXT/LiTS17Lesion-Pro-16PositiveCrops32x160x160-test'
+    # list17_only_lesion_crops_saving_path = '/media/giussepi/TOSHIBA EXT/LiTS17Lesion-Pro-16PositiveCrops32x160x160-test-crops'
     # mgr = LiTS17MGR('/media/giussepi/TOSHIBA EXT/LITS/train',
-    #                 saving_path='/media/giussepi/TOSHIBA EXT/LiTS17Lesion-Pro',
+    #                 saving_path=list17_only_lesion_saving_path,
     #                 target_size=(368, 368, -1), only_liver=False, only_lesion=True)
 
     # mgr.get_insights(verbose=True)
@@ -491,41 +492,62 @@ def main():
     # min_mask_area 25e-4: 15, 25, 73 has 1 label file  # slice area 80x80x25e-4 = 16
     # min_mask_area 1e-15: 73 -> 1
 
-    # creating crop lesion dataset 32x160x160 #################################
+    ###########################################################################
+    #                creating 16-crop lesion dataset 32x160x160               #
+    ###########################################################################
+
+    # SETTING PATHS FOR THE NEW LESION DATASET AND LESION CROP DATASET ########
+
+    # list17_only_lesion_saving_path = os.path.join(settings.LITS17_SAVING_PATH, settings.LITS17_NEW_DB_NAME)
+    # list17_only_lesion_crops_saving_path = os.path.join(settings.LITS17_SAVING_PATH, settings.LITS17_NEW_CROP_DB_NAME)
+    # print(list17_only_lesion_saving_path, list17_only_lesion_crops_saving_path)
+
+    # GENERATING DATASET  #####################################################
+
+    # Make sure to update the settings.py by:
+    # 1. Commenting the code for the LITS17 1 32x80x80-crops dataset
+    # 2. Uncommenting the code for the LITS17 16 32x160x160-crops dataset and setting
+    #    the right path for LITS17_SAVING_PATH
+
+    # Update '/media/giussepi/TOSHIBA EXT/LITS/train' to reflect the right location
+    # on your system of the folder containing the LiTS17 training segmentation and volume NIfTI files
+    # see https://github.com/giussepi/gtorch_utils/blob/main/gtorch_utils/datasets/segmentation/datasets/lits17/README.md
     # mgr = LiTS17MGR('/media/giussepi/TOSHIBA EXT/LITS/train',
-    # saving_path='/media/giussepi/TOSHIBA EXT/LiTS17Lesion368x368x-2-Pro',
-    # target_size=(368, 368, -2), only_liver=False, only_lesion=True)
+    #                 saving_path=list17_only_lesion_saving_path,
+    #                 target_size=settings.LITS17_SIZE, only_liver=False, only_lesion=True)
     # mgr.get_insights(verbose=True)
     # print(mgr.get_lowest_highest_bounds())
     # mgr()
+
+    # ENSURING THE DATASET WAS PROPERLY GENERATED #############################
+
     # mgr.verify_generated_db_target_size()
-    # mgr.perform_visual_verification(68, scans=[40, 64], clahe=True)  # ppl 68 -> scans 64
+
+    # NOTE:  To see the changes open visual_verification.png and it will be continuosly updated with new mask dat
+    # mgr.perform_visual_verification(68, scans=[127, 135], clahe=True)  # ppl 68 -> scans 127-135
+    # os.remove(mgr.VERIFICATION_IMG)
+
+    # SPLITTING DATASET #######################################################
+
     # after manually removing Files without label 2
     # [32, 34, 38, 41, 47, 87, 89, 91, 105, 106, 114, 115, 119]
+    # we ended up with 118 files
     # mgr.split_processed_dataset(.20, .20, shuffle=True)
+
+    # GENERATING CROP DATASET #################################################
+
     # we aim to work with crops masks with an minimum area of 16 so min_mask_area
     # for the following heightxheight crops are:
+    # height x height x min_mask_area = 16
     # 80x80x25e-4 = 16
     # 160x160x625e-6 = 16
     # LiTS17CropMGR(
-    #     '/media/giussepi/TOSHIBA EXT/LiTS17Lesion368x368x-2-Pro',
+    #     list17_only_lesion_saving_path,
     #     patch_size=tuple([*settings.LITS17_CROP_SHAPE[1:], settings.LITS17_CROP_SHAPE[0]]),
     #     patch_overlapping=(.75, .75, .75), only_crops_with_masks=True, min_mask_area=625e-6,
-    #     foregroundmask_threshold=.59, min_crop_mean=.63, crops_per_label=16, adjust_depth=True,
-    #     centre_masks=True,
-    #     saving_path='/media/giussepi/TOSHIBA EXT/LiTS17Lesion-Pro-16PositiveCrops32x160x160'
+    #     foregroundmask_threshold=.59, min_crop_mean=.63, crops_per_label=settings.LITS17_NUM_CROPS,
+    #     adjust_depth=True, centre_masks=True, saving_path=list17_only_lesion_crops_saving_path
     # )()
-    # return 1
-    # crops_per_label=20
-    # Total crops: 1212
-    # Label 2 crops: 0
-    # Label 1 crops: 1212
-    # Label 0 crops: 0
-    # crops_per_label=8
-    # Total crops created: 754
-    # Label 2 crops: 0
-    # Label 1 crops: 754
-    # Label 0 crops: 0
     # crops per lael = 4
     # Total crops created: 472
     # Label 2 crops: 0
@@ -536,24 +558,26 @@ def main():
     # Label 2 crops: 0
     # Label 1 crops: 1888
     # Label 0 crops: 0
-    # getting subdatasets and plotting some crops #############################
+
+    # GETTING SUBDATASETS AND PLOTTING SOME CROPS #############################
+
     # train, val, test = LiTS17CropDataset.get_subdatasets(
-    #     '/media/giussepi/TOSHIBA EXT/LiTS17Lesion-Pro-16PositiveCrops32x160x160/train',
-    #     '/media/giussepi/TOSHIBA EXT/LiTS17Lesion-Pro-16PositiveCrops32x160x160/val',
-    #     '/media/giussepi/TOSHIBA EXT/LiTS17Lesion-Pro-16PositiveCrops32x160x160/test'
+    #     settings.LITS17_TRAIN_PATH,
+    #     settings.LITS17_VAL_PATH,
+    #     settings.LITS17_TEST_PATH,
     # )
     # for db_name, dataset in zip(['train', 'val', 'test'], [train, val, test]):
-    #     print(f'{db_name}: {len(dataset)}')
+    #     logzero.logger.info(f'{db_name}: {len(dataset)}')
     #     # for _ in tqdm(dataset):
     #     #     pass
     #     # data = dataset[0]
 
     #     for data_idx in range(len(dataset)):
     #         data = dataset[data_idx]
-    #         # print(data['image'].shape, data['mask'].shape)
-    #         # print(data['label'], data['label_name'], data['updated_mask_path'], data['original_mask'])
-    #         # print(data['image'].min(), data['image'].max())
-    #         # print(data['mask'].min(), data['mask'].max())
+    #         # logzero.logger.info(data['image'].shape, data['mask'].shape)
+    #         # logzero.logger.info(data['label'], data['label_name'], data['updated_mask_path'], data['original_mask'])
+    #         # logzero.logger.info(data['image'].min(), data['image'].max())
+    #         # logzero.logger.info(data['mask'].min(), data['mask'].max())
     #         if len(data['image'].shape) == 4:
     #             img_ids = [np.random.randint(0, data['image'].shape[-3])]
 
@@ -574,10 +598,10 @@ def main():
     #             # if fmean < .63:
     #             #     continue
 
-    #             print(f"SUM: {data['image'].sum()}")
-    #             print(f"STD MEAN: {std} {mean}")
-    #             print(f"SUM: {foreground_mask.sum()}")
-    #             print(f"foreground mask STD MEAN: {fstd} {fmean}")
+    #             logzero.logger.info(f"SUM: {data['image'].sum()}")
+    #             logzero.logger.info(f"STD MEAN: {std} {mean}")
+    #             logzero.logger.info(f"SUM: {foreground_mask.sum()}")
+    #             logzero.logger.info(f"foreground mask STD MEAN: {fstd} {fmean}")
 
     #             for img_id in img_ids:
     #                 fig, axis = plt.subplots(1, 3)
@@ -616,7 +640,8 @@ def main():
 
     #                 fig.suptitle('CTs and Masks')
     #                 plt.show()
-    a = 1
+
+    logzero.logger.info('End of main.py :)')
 
 
 if __name__ == '__main__':

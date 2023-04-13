@@ -63,7 +63,12 @@ Just open your `settings.py` and set `DEBUG = True`. This will set the log level
 See [github.com/giussepi/gtorch_utils/blob/main/gtorch_utils/datasets/segmentation/datasets/ct82/README.md](https://github.com/giussepi/gtorch_utils/blob/main/gtorch_utils/datasets/segmentation/datasets/ct82/README.md)
 
 ### LiTS17 dataset [^4]
-See [github.com/giussepi/gtorch_utils/blob/main/gtorch_utils/datasets/segmentation/datasets/lits17/README.md](https://github.com/giussepi/gtorch_utils/blob/main/gtorch_utils/datasets/segmentation/datasets/lits17/README.md)
+The instructions to get and prepare the dataset for processing are available at
+[github.com/giussepi/gtorch_utils/blob/main/gtorch_utils/datasets/segmentation/datasets/lits17/README.md](https://github.com/giussepi/gtorch_utils/blob/main/gtorch_utils/datasets/segmentation/datasets/lits17/README.md).
+
+The code to process the dataset is fully integrated with the configuration file. Thus, you need to locate the code for the dataset you want to generate in the `main.py`, uncomment, and follow the provided instructions.
+
+
 
 ### Predict masks for whole CT scans and visualize them
 1. Modify your model manager to support these feature using the `CT3DNIfTIMixin`. E.g.:

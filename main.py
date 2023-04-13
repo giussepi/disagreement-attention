@@ -26,6 +26,7 @@ from gtorch_utils.segmentation.loss_functions.dice import dice_coef_loss
 from gutils.images.images import NIfTI, ProNIfTI
 from monai.transforms import ForegroundMask
 from skimage.exposure import equalize_adapthist
+from tabulate import tabulate
 from torchinfo import summary
 from tqdm import tqdm
 
@@ -235,7 +236,7 @@ def main():
     # MAX DICOMS per subject 466
 
     ###########################################################################
-    #                                  LiTS17                                 #
+    #                        LiTS17 ONLY LIVER DATASET                        #
     ###########################################################################
     # labels files: 131, CT files: 131
     #                           value
@@ -254,12 +255,128 @@ def main():
     # Width                   512    512
     # Depth                    74    987
 
+    # GENERATING DATASET ######################################################
+    # list17_only_liver_saving_path = '/media/giussepi/TOSHIBA EXT/LiTS17Liver-Pro-test'
+    # mgr = LiTS17MGR('/media/giussepi/TOSHIBA EXT/LITS/train',
+    #                 saving_path=list17_only_liver_saving_path,
+    #                 target_size=(368, 368, -1), only_liver=True, only_lesion=False)
+    # mgr.get_insights(verbose=True)
+    # print(mgr.get_lowest_highest_bounds())  # (-2685.5, 1726.5)
+    # mgr()
+
+    # NOTE: To see the changes open visual_verification.png located at the project root (this image will be
+    # created after running the following line) and it will be continuosly updated with new mask data
+    # (it worked like this at least on Ubuntu Linux)
+    # mgr.perform_visual_verification(68, scans=[40, 64], clahe=True)  # ppl 68 -> scans 64
+    # os.remove(mgr.VERIFICATION_IMG)
+
+    # ANALYZING NUMBER OF SCANS ON GENERATED LISTS17 WITH ONLY LIVER LABEL ####
+    # counter = defaultdict(lambda: 0)
+    # for f in tqdm(glob.glob(os.path.join(list17_only_liver_saving_path, '**/label_*.nii.gz'), recursive=True)):
+    #     scans = NIfTI(f).shape[-1]
+    #     counter[scans] += 1
+    #     if scans < 32:
+    #         logzero.logger.info(f'{f} has {scans} scans')
+    # # a = [*counter.keys()]
+    # # a.sort()
+    # # print(a)
+    # logzero.logger.info('SUMMARY')
+    # for i in range(29, 32):
+    #     logzero.logger.info(f'{counter[i]} label files have {i} scans')
+    # @LiTS17Liver-Pro the labels are [29, 32, 26, ..., 299
+    # and we only have 3 cases with 29 scans so we can get rid of them to
+    # use the same crop size as CT-82
+    # these cases are the 000, 001, 054
+
+    # after manually removing files without the desired label and less scans than 32
+    # (000, 001, 054 had 29 scans) we ended up with 256 files
+    # mgr.split_processed_dataset(.20, .20, shuffle=True)
+
+    # GETTING 2D SCANS INFORMATION ############################################
+    # min_ = float('inf')
+    # max_ = float('-inf')
+    # min_scans = float('inf')
+    # max_scans = float('-inf')
+    # for f in tqdm(glob.glob(os.path.join(list17_only_liver_saving_path, '**/label_*.nii.gz'), recursive=True)):
+    #     data = NIfTI(f).ndarray
+    #     num_scans_with_labels = data.sum(axis=0).sum(axis=0).astype(bool).sum()
+    #     min_scans = min(min_scans, data.shape[-1])
+    #     max_scans = max(max_scans, data.shape[-1])
+    #     min_ = min(min_, num_scans_with_labels)
+    #     max_ = max(max_, num_scans_with_labels)
+    #     assert len(np.unique(data)) == 2
+    #     assert 1 in np.unique(data)
+    #     # print(np.unique(NIfTI(f).ndarray))
+
+    # table = [
+    #     ['', 'value'],
+    #     ['min 2D scan number with data per label file', min_],
+    #     ['max 2D scan number with data per label file', max_],
+    #     ['min number of 2D scans per CT', min_scans],
+    #     ['max number of 2D scans per CT', max_scans],
+    # ]
+    # logzero.logger.info('\n%s', str(tabulate(table, headers="firstrow")))
+    # #                                                value
+    # # -------------------------------------------  -------
+    # # min 2D scan number with data per label file       32
+    # # max 2D scan number with data per label file      299
+    # # min number of 2D scans per CT                     32
+    # # max number of 2D scans per CT                    299
+
+    # GETTING SUBDATASETS AND PLOTTING SOME CROPS #############################
+    # train, val, test = LiTS17Dataset.get_subdatasets(
+    #     os.path.join(list17_only_liver_saving_path, 'train'),
+    #     os.path.join(list17_only_liver_saving_path, 'val'),
+    #     os.path.join(list17_only_liver_saving_path, 'test'),
+    # )
+    # for db_name, dataset in zip(['train', 'val', 'test'], [train, val, test]):
+    #     logzero.logger.info(f'{db_name}: {len(dataset)}')
+    #     data = dataset[0]
+    #     # logzero.logger.info(data['image'].shape, data['mask'].shape)
+    #     # logzero.logger.info(data['label'], data['label_name'], data['updated_mask_path'], data['original_mask'])
+    #     # logzero.logger.info(data['image'].min(), data['image'].max())
+    #     # logzero.logger.info(data['mask'].min(), data['mask'].max())
+
+    #     if len(data['image'].shape) == 4:
+    #         img_id = np.random.randint(0, data['image'].shape[-3])
+    #         fig, axis = plt.subplots(1, 2)
+    #         axis[0].imshow(
+    #             equalize_adapthist(data['image'].detach().numpy()).squeeze().transpose(1, 2, 0)[..., img_id],
+    #             cmap='gray'
+    #         )
+    #         axis[1].imshow(data['mask'].detach().numpy().squeeze().transpose(1, 2, 0)[..., img_id], cmap='gray')
+    #         plt.show()
+    #     else:
+    #         num_crops = dataset[0]['image'].shape[0]
+    #         imgs_per_row = 4
+    #         for ii in range(0, len(dataset), imgs_per_row):
+    #             fig, axis = plt.subplots(2, imgs_per_row*num_crops)
+    #             # for idx, d in zip([*range(imgs_per_row)], dataset):
+    #             for idx in range(imgs_per_row):
+    #                 d = dataset[idx+ii]
+    #                 for cidx in range(num_crops):
+    #                     img_id = np.random.randint(0, d['image'].shape[-3])
+    #                     axis[0, idx*num_crops+cidx].imshow(
+    #                         equalize_adapthist(d['image'][cidx].detach().numpy()
+    #                                            ).squeeze().transpose(1, 2, 0)[..., img_id],
+    #                         cmap='gray'
+    #                     )
+    #                     axis[0, idx*num_crops+cidx].set_title(f'CT{idx}-{cidx}')
+    #                     axis[1, idx*num_crops+cidx].imshow(d['mask'][cidx].detach().numpy(
+    #                     ).squeeze().transpose(1, 2, 0)[..., img_id], cmap='gray')
+    #                     axis[1, idx*num_crops+cidx].set_title(f'Mask{idx}-{cidx}')
+
+    #             fig.suptitle('CTs and Masks')
+    #             plt.show()
+
+    ###########################################################################
+    #                        LiTS17 ONLY LESION DATASET                       #
+    ###########################################################################
+    # hereee
+    # only lesion #############################################################
     # mgr = LiTS17MGR('/media/giussepi/TOSHIBA EXT/LITS/train',
     #                 saving_path='/media/giussepi/TOSHIBA EXT/LiTS17Lesion-Pro',
     #                 target_size=(368, 368, -1), only_liver=False, only_lesion=True)
-    mgr = LiTS17MGR('/media/giussepi/TOSHIBA EXT/LITS/train',
-                    saving_path='/media/giussepi/TOSHIBA EXT/LiTS17Liver-Pro-test',
-                    target_size=(368, 368, -1), only_liver=True, only_lesion=False)
 
     # mgr.get_insights(verbose=True)
     # print(mgr.get_lowest_highest_bounds())  # (-2685.5, 1726.5)
@@ -499,6 +616,7 @@ def main():
 
     #                 fig.suptitle('CTs and Masks')
     #                 plt.show()
+    a = 1
 
 
 if __name__ == '__main__':

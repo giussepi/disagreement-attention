@@ -397,9 +397,10 @@ def main():
     # Update '/media/giussepi/TOSHIBA EXT/LITS/train' to reflect the right location
     # on your system of the folder containing the LiTS17 training segmentation and volume NIfTI files
     # see https://github.com/giussepi/gtorch_utils/blob/main/gtorch_utils/datasets/segmentation/datasets/lits17/README.md
-    mgr = LiTS17MGR('/media/giussepi/TOSHIBA EXT/LITS/train',
-                    saving_path=settings.LITS17_NEW_DB_PATH,
-                    target_size=settings.LITS17_SIZE, only_liver=False, only_lesion=True)
+
+    # mgr = LiTS17MGR('/media/giussepi/TOSHIBA EXT/LITS/train',
+    #                 saving_path=settings.LITS17_NEW_DB_PATH,
+    #                 target_size=settings.LITS17_SIZE, only_liver=False, only_lesion=True)
     # mgr.get_insights(verbose=True)
     # print(mgr.get_lowest_highest_bounds())
     # mgr()

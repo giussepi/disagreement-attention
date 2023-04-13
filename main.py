@@ -238,6 +238,7 @@ def main():
     ###########################################################################
     #                        LiTS17 ONLY LIVER DATASET                        #
     ###########################################################################
+
     # labels files: 131, CT files: 131
     #                           value
     # ------------------------  ---------------------------------------------------------
@@ -256,10 +257,18 @@ def main():
     # Depth                    74    987
 
     # GENERATING DATASET ######################################################
-    # list17_only_liver_saving_path = '/media/giussepi/TOSHIBA EXT/LiTS17Liver-Pro-test'
+
+    # Make sure to update the settings.py by:
+    # 1. Commenting the code for the LITS17 Lesion 16 32x160x160-crops dataset
+    # 2. Uncommenting the code for the LITS17 Liver 1 32x80x80-crops dataset and setting
+    #    the right path for LITS17_SAVING_PATH
+
+    # Update '/media/giussepi/TOSHIBA EXT/LITS/train' to reflect the right location
+    # on your system of the folder containing the LiTS17 training segmentation and volume NIfTI files
+    # see https://github.com/giussepi/gtorch_utils/blob/main/gtorch_utils/datasets/segmentation/datasets/lits17/README.md
     # mgr = LiTS17MGR('/media/giussepi/TOSHIBA EXT/LITS/train',
-    #                 saving_path=list17_only_liver_saving_path,
-    #                 target_size=(368, 368, -1), only_liver=True, only_lesion=False)
+    #                 saving_path=settings.LITS17_NEW_DB_PATH,
+    #                 target_size=settings.LITS17_SIZE, only_liver=True, only_lesion=False)
     # mgr.get_insights(verbose=True)
     # print(mgr.get_lowest_highest_bounds())  # (-2685.5, 1726.5)
     # mgr()
@@ -271,8 +280,9 @@ def main():
     # os.remove(mgr.VERIFICATION_IMG)
 
     # ANALYZING NUMBER OF SCANS ON GENERATED LISTS17 WITH ONLY LIVER LABEL ####
+
     # counter = defaultdict(lambda: 0)
-    # for f in tqdm(glob.glob(os.path.join(list17_only_liver_saving_path, '**/label_*.nii.gz'), recursive=True)):
+    # for f in tqdm(glob.glob(os.path.join(settings.LITS17_NEW_DB_PATH, '**/label_*.nii.gz'), recursive=True)):
     #     scans = NIfTI(f).shape[-1]
     #     counter[scans] += 1
     #     if scans < 32:
@@ -283,6 +293,7 @@ def main():
     # logzero.logger.info('SUMMARY')
     # for i in range(29, 32):
     #     logzero.logger.info(f'{counter[i]} label files have {i} scans')
+
     # @LiTS17Liver-Pro the labels are [29, 32, 26, ..., 299
     # and we only have 3 cases with 29 scans so we can get rid of them to
     # use the same crop size as CT-82
@@ -293,11 +304,12 @@ def main():
     # mgr.split_processed_dataset(.20, .20, shuffle=True)
 
     # GETTING 2D SCANS INFORMATION ############################################
+
     # min_ = float('inf')
     # max_ = float('-inf')
     # min_scans = float('inf')
     # max_scans = float('-inf')
-    # for f in tqdm(glob.glob(os.path.join(list17_only_liver_saving_path, '**/label_*.nii.gz'), recursive=True)):
+    # for f in tqdm(glob.glob(os.path.join(settings.LITS17_NEW_DB_PATH, '**/label_*.nii.gz'), recursive=True)):
     #     data = NIfTI(f).ndarray
     #     num_scans_with_labels = data.sum(axis=0).sum(axis=0).astype(bool).sum()
     #     min_scans = min(min_scans, data.shape[-1])
@@ -316,18 +328,20 @@ def main():
     #     ['max number of 2D scans per CT', max_scans],
     # ]
     # logzero.logger.info('\n%s', str(tabulate(table, headers="firstrow")))
-    # #                                                value
-    # # -------------------------------------------  -------
-    # # min 2D scan number with data per label file       32
-    # # max 2D scan number with data per label file      299
-    # # min number of 2D scans per CT                     32
-    # # max number of 2D scans per CT                    299
+
+    #                                                value
+    # -------------------------------------------  -------
+    # min 2D scan number with data per label file       32
+    # max 2D scan number with data per label file      299
+    # min number of 2D scans per CT                     32
+    # max number of 2D scans per CT                    299
 
     # GETTING SUBDATASETS AND PLOTTING SOME CROPS #############################
+
     # train, val, test = LiTS17Dataset.get_subdatasets(
-    #     os.path.join(list17_only_liver_saving_path, 'train'),
-    #     os.path.join(list17_only_liver_saving_path, 'val'),
-    #     os.path.join(list17_only_liver_saving_path, 'test'),
+    #     settings.LITS17_TRAIN_PATH,
+    #     settings.LITS17_VAL_PATH,
+    #     settings.LITS17_TEST_PATH,
     # )
     # for db_name, dataset in zip(['train', 'val', 'test'], [train, val, test]):
     #     logzero.logger.info(f'{db_name}: {len(dataset)}')
@@ -370,151 +384,22 @@ def main():
     #             plt.show()
 
     ###########################################################################
-    #                        LiTS17 ONLY LESION DATASET                       #
+    #                 LiTS17 16-crop lesion dataset 32x160x160                #
     ###########################################################################
-    # only lesion #############################################################
-    # list17_only_lesion_saving_path = '/media/giussepi/TOSHIBA EXT/LiTS17Lesion-Pro-16PositiveCrops32x160x160-test'
-    # list17_only_lesion_crops_saving_path = '/media/giussepi/TOSHIBA EXT/LiTS17Lesion-Pro-16PositiveCrops32x160x160-test-crops'
-    # mgr = LiTS17MGR('/media/giussepi/TOSHIBA EXT/LITS/train',
-    #                 saving_path=list17_only_lesion_saving_path,
-    #                 target_size=(368, 368, -1), only_liver=False, only_lesion=True)
-
-    # mgr.get_insights(verbose=True)
-    # print(mgr.get_lowest_highest_bounds())  # (-2685.5, 1726.5)
-    # mgr()
-
-    # NOTE:  To see the changes open visual_verification.png and it will be continuosly updated with new mask data
-    # mgr.perform_visual_verification(68, scans=[40, 64], clahe=True)  # ppl 68 -> scans 64
-
-    # after manually removing files without the desired label and less scans than 32
-    # (000, 001, 054 had 29 scans) we ended up with 230 FILES @ LiTS17 only lesion and
-    # 256 files @ LiTS17 only liver
-    # mgr.split_processed_dataset(.20, .20, shuffle=True)
-
-    # min_ = float('inf')
-    # max_ = float('-inf')
-    # min_scans = float('inf')
-    # max_scans = float('-inf')
-    # for f in tqdm(glob.glob('/media/giussepi/TOSHIBA EXT/LiTS17Lesion-Pro/**/label_*.nii.gz', recursive=True)):
-    #     data = NIfTI(f).ndarray
-    #     num_scans_with_labels = data.sum(axis=0).sum(axis=0).astype(bool).sum()
-    #     min_scans = min(min_scans, data.shape[-1])
-    #     max_scans = max(max_scans, data.shape[-1])
-    #     min_ = min(min_, num_scans_with_labels)
-    #     max_ = max(max_, num_scans_with_labels)
-    #     assert len(np.unique(data)) == 2
-    #     assert 1 in np.unique(data)
-    #     # print(np.unique(NIfTI(f).ndarray))
-    # print(min_, max_, min_scans, max_scans)
-    # @LiTS17Lesion-Pro the min, max number of scans with data per label are  3 and 245 !!!!
-    #                       min, max scans are 29, 299
-
-    # analyzing number of scans on generated lists17 with only liver label ####
-    # counter = defaultdict(lambda: 0)
-    # for f in tqdm(glob.glob('/media/giussepi/TOSHIBA EXT/LiTS17Liver-Pro/**/label_*.nii.gz', recursive=True)):
-    #     scans = NIfTI(f).shape[-1]
-    #     counter[scans] += 1
-    #     if scans == 29:
-    #         print(f)
-    # a = [*counter.keys()]
-    # a.sort()
-    # print(a)
-    # print(counter[29])
-    # @LiTS17Liver-Pro the labels are [29, 32, 26, ..., 299
-    # and we only have 3 cases with 29 scans so we can get rid of them to
-    # use the same crop size as CT-82
-    # these cases are the 000, 001, 054
-
-    # getting subdatasets and plotting some crops #############################
-    # train, val, test = LiTS17Dataset.get_subdatasets(
-    #     '/media/giussepi/TOSHIBA EXT/LiTS17Lesion-Pro/train',
-    #     '/media/giussepi/TOSHIBA EXT/LiTS17Lesion-Pro/val',
-    #     '/media/giussepi/TOSHIBA EXT/LiTS17Lesion-Pro/test'
-    # )
-    # for db_name, dataset in zip(['train', 'val', 'test'], [train, val, test]):
-    #     print(f'{db_name}: {len(dataset)}')
-    #     data = dataset[0]
-    #     print(data['image'].shape, data['mask'].shape)
-    #     print(data['label'], data['label_name'], data['updated_mask_path'], data['original_mask'])
-    #     print(data['image'].min(), data['image'].max())
-    #     print(data['mask'].min(), data['mask'].max())
-
-    #     if len(data['image'].shape) == 4:
-    #         img_id = np.random.randint(0, data['image'].shape[-3])
-    #         fig, axis = plt.subplots(1, 2)
-    #         axis[0].imshow(
-    #             equalize_adapthist(data['image'].detach().numpy()).squeeze().transpose(1, 2, 0)[..., img_id],
-    #             cmap='gray'
-    #         )
-    #         axis[1].imshow(data['mask'].detach().numpy().squeeze().transpose(1, 2, 0)[..., img_id], cmap='gray')
-    #         plt.show()
-    #     else:
-    #         num_crops = dataset[0]['image'].shape[0]
-    #         imgs_per_row = 4
-    #         for ii in range(0, len(dataset), imgs_per_row):
-    #             fig, axis = plt.subplots(2, imgs_per_row*num_crops)
-    #             # for idx, d in zip([*range(imgs_per_row)], dataset):
-    #             for idx in range(imgs_per_row):
-    #                 d = dataset[idx+ii]
-    #                 for cidx in range(num_crops):
-    #                     img_id = np.random.randint(0, d['image'].shape[-3])
-    #                     axis[0, idx*num_crops+cidx].imshow(
-    #                         equalize_adapthist(d['image'][cidx].detach().numpy()
-    #                                            ).squeeze().transpose(1, 2, 0)[..., img_id],
-    #                         cmap='gray'
-    #                     )
-    #                     axis[0, idx*num_crops+cidx].set_title(f'CT{idx}-{cidx}')
-    #                     axis[1, idx*num_crops+cidx].imshow(d['mask'][cidx].detach().numpy(
-    #                     ).squeeze().transpose(1, 2, 0)[..., img_id], cmap='gray')
-    #                     axis[1, idx*num_crops+cidx].set_title(f'Mask{idx}-{cidx}')
-
-    #             fig.suptitle('CTs and Masks')
-    #             plt.show()
-
-    # generating crops dataset ################################################
-    # LiTS17CropMGR(
-    #     '/media/giussepi/TOSHIBA EXT/LiTS17Lesion-Pro',
-    #     patch_size=tuple([*settings.LITS17_CROP_SHAPE[1:], settings.LITS17_CROP_SHAPE[0]]),
-    #     patch_overlapping=(.25, .25, .25), only_crops_with_masks=True, min_mask_area=25e-4,
-    #     min_crop_mean=0.41, crops_per_label=20, adjust_depth=False,
-    #     saving_path='/media/giussepi/TOSHIBA EXT/LiTS17Lesion-Pro-20PositiveCrops'
-    # )()
-    # return 1
-    # Total crops: 3853
-    # Label 2 crops: 0
-    # Label 1 crops: 1553
-    # Label 0 crops: 2300
-    # train 2291, val 762, test 800
-    # Total crops: 1553
-    # Label 2 crops: 0
-    # Label 1 crops: 1553
-    # all crops with masks [I 220928 18:17:29 lits17cropmgr:133] Total crops: 2683
-    # min_mask_area 25e-4: 15, 25, 73 has 1 label file  # slice area 80x80x25e-4 = 16
-    # min_mask_area 1e-15: 73 -> 1
-
-    ###########################################################################
-    #                creating 16-crop lesion dataset 32x160x160               #
-    ###########################################################################
-
-    # SETTING PATHS FOR THE NEW LESION DATASET AND LESION CROP DATASET ########
-
-    # list17_only_lesion_saving_path = os.path.join(settings.LITS17_SAVING_PATH, settings.LITS17_NEW_DB_NAME)
-    # list17_only_lesion_crops_saving_path = os.path.join(settings.LITS17_SAVING_PATH, settings.LITS17_NEW_CROP_DB_NAME)
-    # print(list17_only_lesion_saving_path, list17_only_lesion_crops_saving_path)
 
     # GENERATING DATASET  #####################################################
 
     # Make sure to update the settings.py by:
-    # 1. Commenting the code for the LITS17 1 32x80x80-crops dataset
-    # 2. Uncommenting the code for the LITS17 16 32x160x160-crops dataset and setting
+    # 1. Commenting the code for the LITS17 Liver 1 32x80x80-crops dataset
+    # 2. Uncommenting the code for the LITS17 Lesion 16 32x160x160-crops dataset and setting
     #    the right path for LITS17_SAVING_PATH
 
     # Update '/media/giussepi/TOSHIBA EXT/LITS/train' to reflect the right location
     # on your system of the folder containing the LiTS17 training segmentation and volume NIfTI files
     # see https://github.com/giussepi/gtorch_utils/blob/main/gtorch_utils/datasets/segmentation/datasets/lits17/README.md
-    # mgr = LiTS17MGR('/media/giussepi/TOSHIBA EXT/LITS/train',
-    #                 saving_path=list17_only_lesion_saving_path,
-    #                 target_size=settings.LITS17_SIZE, only_liver=False, only_lesion=True)
+    mgr = LiTS17MGR('/media/giussepi/TOSHIBA EXT/LITS/train',
+                    saving_path=settings.LITS17_NEW_DB_PATH,
+                    target_size=settings.LITS17_SIZE, only_liver=False, only_lesion=True)
     # mgr.get_insights(verbose=True)
     # print(mgr.get_lowest_highest_bounds())
     # mgr()
@@ -541,13 +426,15 @@ def main():
     # height x height x min_mask_area = 16
     # 80x80x25e-4 = 16
     # 160x160x625e-6 = 16
+
     # LiTS17CropMGR(
-    #     list17_only_lesion_saving_path,
+    #     settings.LITS17_NEW_DB_PATH,
     #     patch_size=tuple([*settings.LITS17_CROP_SHAPE[1:], settings.LITS17_CROP_SHAPE[0]]),
     #     patch_overlapping=(.75, .75, .75), only_crops_with_masks=True, min_mask_area=625e-6,
     #     foregroundmask_threshold=.59, min_crop_mean=.63, crops_per_label=settings.LITS17_NUM_CROPS,
-    #     adjust_depth=True, centre_masks=True, saving_path=list17_only_lesion_crops_saving_path
+    #     adjust_depth=True, centre_masks=True, saving_path=settings.LITS17_NEW_CROP_DB_PATH
     # )()
+
     # crops per lael = 4
     # Total crops created: 472
     # Label 2 crops: 0

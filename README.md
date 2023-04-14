@@ -201,7 +201,7 @@ This application employs [logzero](https://logzero.readthedocs.io/en/latest/). T
 
 ## Reference:
 You are free to utilise this program or any of its components. If so, please reference the following paper:
-[https://www.sciencedirect.com/science/article/pii/S1746809423002021](Disagreement attention: Let us agree to disagree on computed tomography segmentation).
+[Disagreement attention: Let us agree to disagree on computed tomography segmentation](https://www.sciencedirect.com/science/article/pii/S1746809423002021).
 
 
 [^1]: Holger R. Roth, Amal Farag, Evrim B. Turkbey, Le Lu, Jiamin Liu, and Ronald M. Summers. (2016). Data From Pancreas-CT. The Cancer Imaging Archive. [https://doi.org/10.7937/K9/TCIA.2016.tNB1kqBU](https://doi.org/10.7937/K9/TCIA.2016.tNB1kqBU)

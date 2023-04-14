@@ -2,7 +2,8 @@
 
 Official Pytorch implementation utilised on the paper: Disagreement attention: Let us agree to disagree on computed tomography segmentation.
 
-<p align="center" dir="auto">
+<span markdown="1">[^5]</span>
+<p markdown="1" align="center" dir="auto">
 	<a target="_blank" rel="noopener noreferrer" href="docs/images/mixed_embedded_da.png">
 		<img src="docs/images/mixed_embedded_da.png" width="350" border="10" alt="Mixed-Embedded Disagreement Attention (MEDA)"/>
 	</a>

@@ -1,7 +1,7 @@
 cff-version: 1.2.0
 message: "If you use this software, please cite it as below."
 authors:
-- family-names: "López Molina"
+- family-names: "Lopez Molina"
   given-names: "Edgar Giussepi"
   orcid: "https://orcid.org/0000-0003-1958-8118"
 title: "Official implementation of Disagrement Attention"
@@ -30,3 +30,4 @@ preferred-citation:
   volume: 84
   year: 2023
   issn: 1746-8094
+  url: https://www.sciencedirect.com/science/article/pii/S1746809423002021

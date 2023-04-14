@@ -1,5 +1,18 @@
-# Disagreement Attention
-Official implementation utilised on the paper: Disagreement attention: Let us agree to disagree on computed tomography segmentation
+# Disagreement Attention and Alternating Deep Supervision
+
+Official Pytorch implementation utilised on the paper: Disagreement attention: Let us agree to disagree on computed tomography segmentation
+
+In general terms the application contains:
+
+1. The **Standard attention gate** (AttentionBlock) and novel **Disagreement-based attention modules** (PureDABlock, EmbeddedDABlock and MixedEmbeddedDABlock).
+
+2. **XAttentionUNet**: A modified Attention UNet that receives the attention class to be employed as an argument.
+
+3. **XAttentionUNet_ADSV**: A modified XAttentionUNet that employs the proposed Alternating Deep Supervision.
+
+4. UNet2D, UNet3D, Attention Unet, UNet with grid attention.
+
+5. The dataset processors and model managers have been moved to [github.com/giussepi/gtorch_utils](https://github.com/giussepi/gtorch_utils).
 
 ## Installation
 

@@ -2,9 +2,17 @@
 
 Official Pytorch implementation utilised on the paper: Disagreement attention: Let us agree to disagree on computed tomography segmentation
 
-<img src="docs/images/mixed_embedded_da.png" width="800" border="10" alt="Mixed-Embedded Disagreement Attention (MEDA)"/>
+<a target="_blank" rel="noopener noreferrer" href="docs/images/mixed_embedded_da.png">
+	<img src="docs/images/mixed_embedded_da.png" width="350" border="10" alt="Mixed-Embedded Disagreement Attention (MEDA)"/>
+</a>
+<br/>
+<em>The schematics of the proposed Mixed-Embedded Disagreement Attention (MEDA).<em/>
 
-<img src="docs/images/adsv.png" width="800" border="10" alt="Alternating Deep Supervision"/>
+<a target="_blank" rel="noopener noreferrer" href="docs/images/adsv.png">
+	<img src="docs/images/adsv.png" width="350" border="10" alt="Alternating Deep Supervision (ADSV)"/>
+</a>
+<br/>
+<em>The proposed Alternating Deep Supervision (ADSV) framework.</em>
 
 In general terms the application contains:
 

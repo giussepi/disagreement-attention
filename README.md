@@ -15,7 +15,7 @@ Official implementation utilised on the paper: Disagreement attention: Let us ag
 
 5. Install pytorch 1.10.0 following the instructions provided on the page [pytorch.org/get-started/previous-versions/#v1100](https://pytorch.org/get-started/previous-versions/#v1100)
 
-6. Make a copy of the configuration file and update it properly
+6. Make a copy of the configuration file, review it thoroughly and update it properly (especially `PROJECT_PATH`, `CT82_SAVING_PATH` and `LITS17_SAVING_PATH`)
 
    `cp settings.py.template settings.py`
 
@@ -60,7 +60,11 @@ Just open your `settings.py` and set `DEBUG = True`. This will set the log level
 **Note**: Always see the class or function definition to pass the correct parameters and see all available options.
 
 ### TCIA Pancreas CT-82 dataset [^1][^2][^3]
-See [github.com/giussepi/gtorch_utils/blob/main/gtorch_utils/datasets/segmentation/datasets/ct82/README.md](https://github.com/giussepi/gtorch_utils/blob/main/gtorch_utils/datasets/segmentation/datasets/ct82/README.md)
+
+The instructions to get and prepare the dataset for processing are available at
+[github.com/giussepi/gtorch_utils/blob/main/gtorch_utils/datasets/segmentation/datasets/ct82/README.md](https://github.com/giussepi/gtorch_utils/blob/main/gtorch_utils/datasets/segmentation/datasets/ct82/README.md)
+
+The code to process the dataset is fully integrated with the configuration file. Thus, you need to locate the code to process the CT-82 dataset in the `main.py`, uncomment, and follow the provided instructions.
 
 ### LiTS17 dataset [^4]
 The instructions to get and prepare the dataset for processing are available at

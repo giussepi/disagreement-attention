@@ -5,6 +5,7 @@ import os
 import logging
 
 import torch
+from gtorch_utils.constants import DB
 from gtorch_utils.segmentation import torchmetrics
 from monai import transforms as ts
 
@@ -67,8 +68,13 @@ PLOT_DIRECTORY = os.path.join(PROJECT_PATH, 'plots')
 #                                     ct82                                    #
 ###############################################################################
 
-CT82_SIZE = [368, 368, -1]  # [height, width, scans]
-CT82_CROP_SHAPE = [32, 80, 80]  # [46, 80, 80] [96, 160, 160] [scans, heigh, width]
+# NOTE: update the following line to reflect the locations of the datasets (created or to be created)
+# set it to PROJECT_PATH if the datasets are or will be in the project root directory
+CT82_SAVING_PATH = os.path.join(os.sep, '<path to your project>')
+
+CT82_NEW_DB_NAME = 'CT-82-Pro'  # processed CT82 dataset name
+CT82_SIZE = (368, 368, -1)  # [height, width, scans]
+CT82_CROP_SHAPE = (32, 80, 80)  # [scans, heigh, width]
 CT82_NUM_CROPS = 1  # 2
 CT82_TRANSFORMS = {
     'train': ts.Compose([
@@ -87,8 +93,8 @@ CT82_TRANSFORMS = {
             keys=['img', 'mask'],
             label_key='mask',
             spatial_size=CT82_CROP_SHAPE,
-            pos=1,  # .5,
-            neg=0,  # .5,
+            pos=.5,  # .5,
+            neg=.5,  # .5,
             num_samples=CT82_NUM_CROPS,
         ),
     ]),
@@ -105,9 +111,12 @@ CT82_TRANSFORMS = {
         ),
     ])
 }
-CT82_TRAIN_PATH = os.path.join(PROJECT_PATH, 'CT-82-Pro', 'train')
-CT82_VAL_PATH = os.path.join(PROJECT_PATH, 'CT-82-Pro', 'val')
-CT82_TEST_PATH = os.path.join(PROJECT_PATH, 'CT-82-Pro', 'test')
+CT82_NEW_DB_PATH = os.path.join(CT82_SAVING_PATH, CT82_NEW_DB_NAME)
+
+# Don't mofify the suffixes DB.TRAIN, DB.VALIDATION and DB.TEST
+CT82_TRAIN_PATH = os.path.join(CT82_NEW_DB_PATH, DB.TRAIN)
+CT82_VAL_PATH = os.path.join(CT82_NEW_DB_PATH, DB.VALIDATION)
+CT82_TEST_PATH = os.path.join(CT82_NEW_DB_PATH, DB.TEST)
 
 ###############################################################################
 #                                    LiTS17                                   #
@@ -115,7 +124,7 @@ CT82_TEST_PATH = os.path.join(PROJECT_PATH, 'CT-82-Pro', 'test')
 
 # NOTE: update the following line to reflect the locations of the datasets (created or to be created)
 # set it to PROJECT_PATH if the datasets are or will be in the project root directory
-LITS17_SAVING_PATH = os.path.join(os.sep, 'media', 'giussepi', 'TOSHIBA EXT')
+LITS17_SAVING_PATH = os.path.join(os.sep, '<path to your project>')
 
 # LITS17 Liver 1 32x80x80-crops dataset #######################################
 
@@ -165,9 +174,11 @@ LITS17_TRANSFORMS = {
     ])
 }
 LITS17_NEW_DB_PATH = os.path.join(LITS17_SAVING_PATH, LITS17_NEW_DB_NAME)
-LITS17_TRAIN_PATH = os.path.join(LITS17_NEW_DB_PATH, 'train')
-LITS17_VAL_PATH = os.path.join(LITS17_NEW_DB_PATH, 'val')
-LITS17_TEST_PATH = os.path.join(LITS17_NEW_DB_PATH, 'test')
+
+# Don't mofify the suffixes DB.TRAIN, DB.VALIDATION and DB.TEST
+LITS17_TRAIN_PATH = os.path.join(LITS17_NEW_DB_PATH, DB.TRAIN)
+LITS17_VAL_PATH = os.path.join(LITS17_NEW_DB_PATH, DB.VALIDATION)
+LITS17_TEST_PATH = os.path.join(LITS17_NEW_DB_PATH, DB.TEST)
 
 
 # LITS17 Lesion 16 32x160x160-crops dataset ###################################
@@ -188,9 +199,11 @@ LITS17_TEST_PATH = os.path.join(LITS17_NEW_DB_PATH, 'test')
 # }
 # LITS17_NEW_DB_PATH = os.path.join(LITS17_SAVING_PATH, LITS17_NEW_DB_NAME)
 # LITS17_NEW_CROP_DB_PATH = os.path.join(LITS17_SAVING_PATH, LITS17_NEW_CROP_DB_NAME)
-# LITS17_TRAIN_PATH = os.path.join(LITS17_NEW_CROP_DB_PATH, 'train')
-# LITS17_VAL_PATH = os.path.join(LITS17_NEW_CROP_DB_PATH, 'val')
-# LITS17_TEST_PATH = os.path.join(LITS17_NEW_CROP_DB_PATH, 'test')
+
+# Don't mofify the suffixes DB.TRAIN, DB.VALIDATION and DB.TEST
+# LITS17_TRAIN_PATH = os.path.join(LITS17_NEW_CROP_DB_PATH, DB.TRAIN)
+# LITS17_VAL_PATH = os.path.join(LITS17_NEW_CROP_DB_PATH, DB.VALIDATION)
+# LITS17_TEST_PATH = os.path.join(LITS17_NEW_CROP_DB_PATH, DB.TEST)
 
 
 ###############################################################################

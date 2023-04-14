@@ -145,10 +145,12 @@ def main():
     #                                CT-82 dataset                                #
     ###############################################################################
 
-    # Processing CT-82 dataset ################################################
-    # target_size = (368, 368, -1)
-    # mgr = CT82MGR(target_size=target_size)
+    # PROCESSING DATASET ######################################################
+
+    # mgr = CT82MGR(saving_path=settings.CT82_NEW_DB_PATH, target_size=settings.CT82_SIZE)
     # mgr()
+
+    # VERIFYING GENERATED DATA ################################################
 
     # assert len(glob.glob(os.path.join(mgr.saving_labels_folder, r'*.nii.gz'))) == 80
     # assert len(glob.glob(os.path.join(mgr.saving_cts_folder, r'*.pro.nii.gz'))) == 80
@@ -160,32 +162,31 @@ def main():
     # for subject in tqdm(files_idx):
     #     labels = NIfTI(os.path.join(mgr.saving_labels_folder, f'label_{subject:02d}.nii.gz'))
     #     cts = ProNIfTI(os.path.join(mgr.saving_cts_folder, f'CT_{subject:02d}.pro.nii.gz'))
-    #     if target_size[-1] != -1:
-    #         assert labels.shape == cts.shape == target_size, (labels.shape, cts.shape, target_size)
+    #     if settings.CT82_SIZE[-1] != -1:
+    #         assert labels.shape == cts.shape == settings.CT82_SIZE, (labels.shape, cts.shape, settings.CT82_SIZE)
     #     else:
     #         assert labels.shape == cts.shape, (labels.shape, cts.shape)
-    #         assert labels.shape[:2] == cts.shape[:2] == target_size[:2], (labels.shape, cts.shape, target_size)
+    #         assert labels.shape[:2] == cts.shape[:2] == settings.CT82_SIZE[:2], (
+    #             labels.shape, cts.shape, settings.CT82_SIZE)
 
-    # NOTE: To see the changes open visual_verification.png and it will be continuosly updated
-    # with new mask data
+    # NOTE: After running the following lines the image file 'visual_verification.png' will be
+    #       created at the project root folder. You have to open it and it will be continuosly
+    #       updated with new CT and mask data until the specified number of 2D scans is completely
+    #       iterated (this is how it works in Ubuntu Linux 20.04.6 LTS ). See the definition of
+    #       CT82MGR.perform_visual_verification to see more options
+    #       https://github.com/giussepi/gtorch_utils/blob/main/gtorch_utils/datasets/segmentation/datasets/ct82/processors/ct82mgr.py#L215
     # mgr.perform_visual_verification(80, scans=[70], clahe=True)
+    # # mgr.perform_visual_verification(1, scans=[72], clahe=True)
     # os.remove(mgr.VERIFICATION_IMG)
 
-    # visual verification of cts ##############################################
-    # target_size = (368, 368, 96)  # (1024, 1024, 96)
-    # mgr = CT82MGR(
-    #     saving_path='CT-82-Pro',
-    #     target_size=target_size
-    # )
-    # mgr.non_existing_ct_folders = []
-    # mgr.perform_visual_verification(1, scans=[72], clahe=True)
-    # os.remove(mgr.VERIFICATION_IMG)
+    # SPLITTING DATASET ###########################################################
 
-    # split dataset ###########################################################
     # mgr.split_processed_dataset(.20, .20, shuffle=False)  # to easily apply 5-fold CV later
 
-    # getting subdatasets and plotting some crops #############################
-    # train, val, test = CT82Dataset.get_subdatasets()
+    # GETTING SUBDATASETS AND PLOTTING SOME CROPS #############################
+
+    # train, val, test = CT82Dataset.get_subdatasets(
+    #     train_path=settings.CT82_TRAIN_PATH, val_path=settings.CT82_VAL_PATH, test_path=settings.CT82_TEST_PATH)
     # for db_name, dataset in zip(['train', 'val', 'test'], [train, val, test]):
     #     print(f'{db_name}: {len(dataset)}')
     #     data = dataset[0]
@@ -223,8 +224,10 @@ def main():
     #                 d['mask'].detach().numpy()[0, ...].squeeze().transpose(1, 2, 0)[..., img_id], cmap='gray')
     #         plt.show()
 
-    # some dataset insights ###################################################
+    # DATASET INSIGHTS ###################################################
+
     # CT82MGR().get_insights(verbose=True)
+
     # DICOM files 18942
     # NIfTI labels 82
     # MIN_VAL = -2048
@@ -238,6 +241,26 @@ def main():
     ###########################################################################
     #                        LiTS17 ONLY LIVER DATASET                        #
     ###########################################################################
+
+    # GENERATING DATASET ######################################################
+
+    # Make sure to update the settings.py by:
+    # 1. Commenting the code for the LITS17 Lesion 16 32x160x160-crops dataset
+    # 2. Uncommenting the code for the LITS17 Liver 1 32x80x80-crops dataset and setting
+    #    the right path for LITS17_SAVING_PATH
+
+    # Update '/media/giussepi/TOSHIBA EXT/LITS/train' to reflect the right location
+    # on your system of the folder containing the LiTS17 training segmentation and volume NIfTI files
+    # see https://github.com/giussepi/gtorch_utils/blob/main/gtorch_utils/datasets/segmentation/datasets/lits17/README.md
+
+    # mgr = LiTS17MGR('/media/giussepi/TOSHIBA EXT/LITS/train',
+    #                 saving_path=settings.LITS17_NEW_DB_PATH,
+    #                 target_size=settings.LITS17_SIZE, only_liver=True, only_lesion=False)
+    # mgr()
+
+    # DATASET INSIGHTS ########################################################
+
+    # mgr.get_insights(verbose=True)
 
     # labels files: 131, CT files: 131
     #                           value
@@ -256,26 +279,17 @@ def main():
     # Width                   512    512
     # Depth                    74    987
 
-    # GENERATING DATASET ######################################################
-
-    # Make sure to update the settings.py by:
-    # 1. Commenting the code for the LITS17 Lesion 16 32x160x160-crops dataset
-    # 2. Uncommenting the code for the LITS17 Liver 1 32x80x80-crops dataset and setting
-    #    the right path for LITS17_SAVING_PATH
-
-    # Update '/media/giussepi/TOSHIBA EXT/LITS/train' to reflect the right location
-    # on your system of the folder containing the LiTS17 training segmentation and volume NIfTI files
-    # see https://github.com/giussepi/gtorch_utils/blob/main/gtorch_utils/datasets/segmentation/datasets/lits17/README.md
-    # mgr = LiTS17MGR('/media/giussepi/TOSHIBA EXT/LITS/train',
-    #                 saving_path=settings.LITS17_NEW_DB_PATH,
-    #                 target_size=settings.LITS17_SIZE, only_liver=True, only_lesion=False)
-    # mgr.get_insights(verbose=True)
     # print(mgr.get_lowest_highest_bounds())  # (-2685.5, 1726.5)
-    # mgr()
 
-    # NOTE: To see the changes open visual_verification.png located at the project root (this image will be
-    # created after running the following line) and it will be continuosly updated with new mask data
-    # (it worked like this at least on Ubuntu Linux)
+    # PLOTTING SOME 2D SCANS ##################################################
+
+    # NOTE: After running the following lines the image file 'visual_verification.png' will be
+    #       created at the project root folder. You have to open it and it will be continuosly
+    #       updated with new CT and mask data until the specified number of 2D scans is completely
+    #       iterated (this is how it works in Ubuntu Linux 20.04.6 LTS ). See the definition of
+    #       LiTS17MGR.perform_visual_verification to see more options
+    #       https://github.com/giussepi/gtorch_utils/blob/main/gtorch_utils/datasets/segmentation/datasets/lits17/processors/lits17mgr.py#L261
+
     # mgr.perform_visual_verification(68, scans=[40, 64], clahe=True)  # ppl 68 -> scans 64
     # os.remove(mgr.VERIFICATION_IMG)
 
@@ -409,7 +423,13 @@ def main():
 
     # mgr.verify_generated_db_target_size()
 
-    # NOTE:  To see the changes open visual_verification.png and it will be continuosly updated with new mask dat
+    # NOTE: After running the following lines the image file 'visual_verification.png' will be
+    #       created at the project root folder. You have to open it and it will be continuosly
+    #       updated with new CT and mask data until the specified number of 2D scans is completely
+    #       iterated (this is how it works in Ubuntu Linux 20.04.6 LTS ). See the definition of
+    #       LiTS17MGR.perform_visual_verification to see more options
+    #       https://github.com/giussepi/gtorch_utils/blob/main/gtorch_utils/datasets/segmentation/datasets/lits17/processors/lits17mgr.py#L261
+
     # mgr.perform_visual_verification(68, scans=[127, 135], clahe=True)  # ppl 68 -> scans 127-135
     # os.remove(mgr.VERIFICATION_IMG)
 
@@ -529,6 +549,7 @@ def main():
     #                 fig.suptitle('CTs and Masks')
     #                 plt.show()
 
+    # end of main #############################################################
     logzero.logger.info('End of main.py :)')
 
 

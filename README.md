@@ -1,4 +1,4 @@
-# Disagreement Attention and Alternating Deep Supervision
+# Disagreement Attention and Alternating Deep Supervision <br/> (Medical Images Segmentation)
 
 Official Pytorch implementation utilised on the paper: Disagreement attention: Let us agree to disagree on computed tomography segmentation.
 

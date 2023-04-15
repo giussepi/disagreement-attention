@@ -105,13 +105,13 @@ model = ModelMGR(
 	...
 	dataset=CT82Dataset,
 	...
-    dataset_kwargs={
-        'train_path': settings.CT82_TRAIN_PATH,
-        'val_path': settings.CT82_VAL_PATH,
-        'test_path': settings.CT82_TEST_PATH,
-        'cotraining': settings.COTRAINING,
-        'cache': settings.DB_CACHE,
-    },
+	dataset_kwargs={
+		'train_path': settings.CT82_TRAIN_PATH,
+		'val_path': settings.CT82_VAL_PATH,
+		'test_path': settings.CT82_TEST_PATH,
+		'cotraining': settings.COTRAINING,
+		'cache': settings.DB_CACHE,
+	},
 	...
 )
 ```

@@ -83,13 +83,13 @@ def main():
         optimizer=torch.optim.Adam,
         optimizer_kwargs=dict(lr=1e-4, betas=(0.9, 0.999), weight_decay=1e-6),
         sanity_checks=False,
-        labels_data=LiTS17OnlyLiverLabels,  # LiTS17OnlyLesionLabels,  # CT82Labels,  # LiTS17OnlyLiverLabels
+        labels_data=LiTS17OnlyLiverLabels,  # LiTS17OnlyLesionLabels,  # CT82Labels
         data_dimensions=settings.DATA_DIMENSIONS,
-        dataset=LiTS17CropDataset,  # CT82Dataset,  # LiTS17Dataset
+        dataset=LiTS17Dataset,  # LiTS17CropDataset,  # CT82Dataset
         dataset_kwargs={
-            'train_path': settings.LITS17_TRAIN_PATH,  # settings.CT82_TRAIN_PATH,  # settings.LITS17_TRAIN_PATH
-            'val_path': settings.LITS17_VAL_PATH,   # settings.CT82_VAL_PATH,  # settings.LITS17_VAL_PATH
-            'test_path': settings.LITS17_TEST_PATH,  # settings.CT82_TEST_PATH,  # settings.LITS17_TEST_PATH
+            'train_path': settings.LITS17_TRAIN_PATH,  # settings.CT82_TRAIN_PATH
+            'val_path': settings.LITS17_VAL_PATH,   # settings.CT82_VAL_PATH,
+            'test_path': settings.LITS17_TEST_PATH,  # settings.CT82_TEST_PATH,
             'cotraining': settings.COTRAINING,
             'cache': settings.DB_CACHE,
         },

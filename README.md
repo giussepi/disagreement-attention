@@ -96,13 +96,73 @@ The instructions to get and prepare the dataset for processing are available at
 
 The code to process the dataset is fully integrated with the configuration file. Thus, you need to locate the code to process the CT-82 dataset in the `main.py`, uncomment, and follow the provided instructions.
 
+Do not forget to configurate the ModelMGR to employ the CT-82:
+
+```python
+model = ModelMGR(
+	...
+	labels_data=CT82Labels,
+	...
+	dataset=CT82Dataset,
+	...
+    dataset_kwargs={
+        'train_path': settings.CT82_TRAIN_PATH,
+        'val_path': settings.CT82_VAL_PATH,
+        'test_path': settings.CT82_TEST_PATH,
+        'cotraining': settings.COTRAINING,
+        'cache': settings.DB_CACHE,
+    },
+	...
+)
+```
+
 ### LiTS17 dataset [^4]
 The instructions to get and prepare the dataset for processing are available at
 [github.com/giussepi/gtorch_utils/blob/main/gtorch_utils/datasets/segmentation/datasets/lits17/README.md](https://github.com/giussepi/gtorch_utils/blob/main/gtorch_utils/datasets/segmentation/datasets/lits17/README.md).
 
 The code to process the dataset is fully integrated with the configuration file. Thus, you need to locate the code for the dataset you want to generate in the `main.py`, uncomment, and follow the provided instructions.
 
+Ensure to update your `settings.py` to employ the LiTS17 Liver or Lesion datasets by locating and uncommenting the LiTS17 dataset configuration to be utilised and commenting the other LiTS17 dataset configuration. E.g. To employ the LiTS17 Liver dataset uncomment the code inside the `LITS17 Liver 1 32x80x80-crops dataset` code block in the `settings.py` and ensure that the dataset configuration inside the `LITS17 Lesion 16 32x160x160-crops dataset` code block is commented out. **IMPORTANT:** If the LiTS17 lesion and liver datasets were located/stored at different locations, update the `LITS17_SAVING_PATH` appropriately.
 
+Do not forget to configurate the ModelMGR to employ the LiTS17 liver or Lesion datasets:
+
+* Using LiTS17 Liver:
+```python
+model = ModelMGR(
+	...
+	labels_data=LiTS17OnlyLiverLabels,
+	...
+	dataset=LiTS17Dataset,
+	...
+    dataset_kwargs={
+        'train_path': settings.LITS17_TRAIN_PATH,
+        'val_path': settings.LITS17_VAL_PATH,
+        'test_path': settings.LITS17_TEST_PATH,
+        'cotraining': settings.COTRAINING,
+        'cache': settings.DB_CACHE,
+    },
+	...
+)
+```
+
+* Using LiTS17 Lesion crops:
+```python
+model = ModelMGR(
+	...
+	labels_data=LiTS17OnlyLesionLabels,
+	...
+	dataset=LiTS17CropDataset,
+	...
+    dataset_kwargs={
+        'train_path': settings.LITS17_TRAIN_PATH,
+        'val_path': settings.LITS17_VAL_PATH,
+        'test_path': settings.LITS17_TEST_PATH,
+        'cotraining': settings.COTRAINING,
+        'cache': settings.DB_CACHE,
+    },
+	...
+)
+```
 
 ### Predict masks for whole CT scans and visualize them
 1. Modify your model manager to support these feature using the `CT3DNIfTIMixin`. E.g.:
@@ -185,7 +245,7 @@ model7 = CTModelMGR(
     sanity_checks=False,
     labels_data=LiTS17OnlyLiverLabels,  # LiTS17OnlyLesionLabels,  # CT82Labels
     data_dimensions=settings.DATA_DIMENSIONS,
-    dataset=LiTS17CropDataset,  # CT82Dataset,  # LiTS17Dataset
+    dataset=LiTS17Dataset,  # LiTS17CropDataset,  # CT82Dataset
     dataset_kwargs={
         'train_path': settings.LITS17_TRAIN_PATH,  # settings.CT82_TRAIN_PATH
         'val_path': settings.LITS17_VAL_PATH,   # settings.CT82_VAL_PATH

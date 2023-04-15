@@ -91,12 +91,12 @@ Just open your `settings.py` and set `DEBUG = True`. This will set the log level
 
 ### TCIA Pancreas CT-82 dataset [^1][^2][^3]
 
-The instructions to get and prepare the dataset for processing are available at
-[github.com/giussepi/gtorch_utils/blob/main/gtorch_utils/datasets/segmentation/datasets/ct82/README.md](https://github.com/giussepi/gtorch_utils/blob/main/gtorch_utils/datasets/segmentation/datasets/ct82/README.md)
+The instructions to get the dataset are available at
+[github.com/giussepi/gtorch_utils/blob/main/gtorch_utils/datasets/segmentation/datasets/ct82/README.md](https://github.com/giussepi/gtorch_utils/blob/main/gtorch_utils/datasets/segmentation/datasets/ct82/README.md).
 
 The code to process the dataset is fully integrated with the configuration file. Thus, you need to locate the code to process the CT-82 dataset in the `main.py`, uncomment, and follow the provided instructions.
 
-Do not forget to configurate the ModelMGR to employ the CT-82:
+**Before training**: Do not forget to configurate the ModelMGR to employ the CT-82:
 
 ```python
 model = ModelMGR(
@@ -117,14 +117,14 @@ model = ModelMGR(
 ```
 
 ### LiTS17 dataset [^4]
-The instructions to get and prepare the dataset for processing are available at
+Ensure to update your `settings.py` to employ the LiTS17 Liver or Lesion datasets by locating and uncommenting the LiTS17 dataset configuration to be utilised and commenting the other LiTS17 dataset configuration. E.g. To employ the LiTS17 Liver dataset uncomment the code inside the `LITS17 Liver 1 32x80x80-crops dataset` code block in the `settings.py` and ensure that the dataset configuration inside the `LITS17 Lesion 16 32x160x160-crops dataset` code block is commented out. **IMPORTANT:** If the LiTS17 lesion and liver datasets are or will be at different locations, update the `LITS17_SAVING_PATH` appropriately.
+
+The instructions to get the dataset are available at
 [github.com/giussepi/gtorch_utils/blob/main/gtorch_utils/datasets/segmentation/datasets/lits17/README.md](https://github.com/giussepi/gtorch_utils/blob/main/gtorch_utils/datasets/segmentation/datasets/lits17/README.md).
 
 The code to process the dataset is fully integrated with the configuration file. Thus, you need to locate the code for the dataset you want to generate in the `main.py`, uncomment, and follow the provided instructions.
 
-Ensure to update your `settings.py` to employ the LiTS17 Liver or Lesion datasets by locating and uncommenting the LiTS17 dataset configuration to be utilised and commenting the other LiTS17 dataset configuration. E.g. To employ the LiTS17 Liver dataset uncomment the code inside the `LITS17 Liver 1 32x80x80-crops dataset` code block in the `settings.py` and ensure that the dataset configuration inside the `LITS17 Lesion 16 32x160x160-crops dataset` code block is commented out. **IMPORTANT:** If the LiTS17 lesion and liver datasets were located/stored at different locations, update the `LITS17_SAVING_PATH` appropriately.
-
-Do not forget to configurate the ModelMGR to employ the LiTS17 liver or Lesion datasets:
+**Before training**: Do not forget to configurate the ModelMGR to employ the LiTS17 liver or Lesion datasets:
 
 * Using LiTS17 Liver:
 ```python

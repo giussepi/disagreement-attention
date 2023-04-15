@@ -41,7 +41,7 @@ In general terms the application contains:
 5. Install the requirements
 
    ```bash
-   pip install -r requirements
+   pip install -r requirements.txt
    ```
 
 6. Make a copy of the configuration file, review it thoroughly and update it properly (especially `PROJECT_PATH`, `CT82_SAVING_PATH` and `LITS17_SAVING_PATH`)

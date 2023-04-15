@@ -34,17 +34,21 @@ In general terms the application contains:
 
 2. [OPTIONAL] Create your virtual enviroment and activate it
 
-3. Install [OpenSlide](https://openslide.org/download/)
+3. Install Pytorch 1.10.0 following the instructions provided on the page [pytorch.org/get-started/previous-versions/#v1100](https://pytorch.org/get-started/previous-versions/#v1100).
 
-4. Install the requirements
+4. Install [OpenSlide](https://openslide.org/download/)
 
-   `pip install -r requirements`
+5. Install the requirements
 
-5. Install pytorch 1.10.0 following the instructions provided on the page [pytorch.org/get-started/previous-versions/#v1100](https://pytorch.org/get-started/previous-versions/#v1100)
+   ```bash
+   pip install -r requirements
+   ```
 
 6. Make a copy of the configuration file, review it thoroughly and update it properly (especially `PROJECT_PATH`, `CT82_SAVING_PATH` and `LITS17_SAVING_PATH`)
 
-   `cp settings.py.template settings.py`
+   ```bash
+   cp settings.py.template settings.py
+   ```
 
 
 ## Usage
@@ -69,13 +73,12 @@ The main rule is running everything from the `main.py`. Thus, code for processin
 
 ### Running TensorBoard
 
-1. Make `run_tensorboard.sh` executable:
+1. Make `run_tensorboard.sh` executable and run it:
 
-	`chmod +x run_tensorboard.sh`
-
-2. Execute it
-
-	`./run_tensorboard.sh`
+	```bash
+	chmod +x run_tensorboard.sh
+	./run_tensorboard.sh
+	```
 
 
 ### Debugging

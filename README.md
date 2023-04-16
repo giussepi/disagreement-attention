@@ -26,7 +26,7 @@ In general terms the application contains:
 
 4. UNet2D, UNet3D, Attention Unet, UNet with grid attention.
 
-5. The dataset processors and model managers have been moved to [github.com/giussepi/gtorch_utils](https://github.com/giussepi/gtorch_utils).
+5. The dataset processors and model managers for the CT-82 and LiTS17 datasets have been moved to [github.com/giussepi/gtorch_utils/tree/main/gtorch_utils/datasets/segmentation/datasets/ct82](https://github.com/giussepi/gtorch_utils/tree/main/gtorch_utils/datasets/segmentation/datasets/ct82) and [github.com/giussepi/gtorch_utils/tree/main/gtorch_utils/datasets/segmentation/datasets/lits17](https://github.com/giussepi/gtorch_utils/tree/main/gtorch_utils/datasets/segmentation/datasets/lits17), respectively.
 
 ## Installation
 

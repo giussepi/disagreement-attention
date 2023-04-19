@@ -7,6 +7,7 @@ import logging
 import torch
 from gtorch_utils.constants import DB
 from gtorch_utils.segmentation import torchmetrics
+from gtorch_utils.datasets.segmentation.datasets.lits17.constants import LiTS17DBConfig
 from monai import transforms as ts
 
 ###############################################################################
@@ -125,86 +126,88 @@ CT82_TEST_PATH = os.path.join(CT82_NEW_DB_PATH, DB.TEST)
 # NOTE: update the following line to reflect the locations of the datasets (created or to be created)
 # set it to PROJECT_PATH if the datasets are or will be in the project root directory
 LITS17_SAVING_PATH = os.path.join(os.sep, '<path to your project>')
+LITS17_CONFIG = LiTS17DBConfig.LIVER  # This variable is utilised on other modules
 
-# LITS17 Liver 1 32x80x80-crops dataset #######################################
+if LITS17_CONFIG == LiTS17DBConfig.LIVER:
 
-LITS17_NEW_DB_NAME = 'LiTS17Liver-Pro'  # processed lits17 liver dataset name
-LITS17_SIZE = (368, 368, -1)  # [height, width, scans]
-LITS17_CROP_SHAPE = (32, 80, 80)  # [scans, heigh, width]
-LITS17_NUM_CROPS = 1
-LITS17_TRANSFORMS = {
-    'train': ts.Compose([
-        ts.ToTensord(keys=['img', 'mask']),
-        ts.CropForegroundd(keys=['img', 'mask'], source_key='img', select_fn=lambda x: x > .5),
-        ts.RandAxisFlipd(keys=['img', 'mask'], prob=.5),
-        ts.RandAffined(
-            keys=['img', 'mask'],
-            prob=1.,
-            rotate_range=0.261799,  # 15 degrees
-            # translate_range=[0.1*LITS17_SIZE[2], 0.1*LITS17_SIZE[0], 0.1*LITS17_SIZE[1]],
-            translate_range=[0*LITS17_SIZE[2], 0.1*LITS17_SIZE[0], 0.1*LITS17_SIZE[1]],
-            scale_range=((-0.3,  0.3), (-0.3, 0.3), (-0.3, 0.3)),
-            # scale_range=((-0.3, 0), (-0.3, 0), (-0.3, 0))
-            mode=["bilinear", "nearest"]
-        ),
-        ts.RandCropByLabelClassesd(
-            keys=['img', 'mask'],
-            label_key='mask',
-            spatial_size=LITS17_CROP_SHAPE,
-            ratios=[.5, .5],  # [0, 1],
-            num_classes=2,
-            num_samples=LITS17_NUM_CROPS,
-            image_key='img',  # 'mask',
-            image_threshold=0.38,  # 0,
-        ),
-    ]),
-    'valtest': ts.Compose([
-        ts.ToTensord(keys=['img', 'mask']),
-        ts.CropForegroundd(keys=['img', 'mask'], source_key='img', select_fn=lambda x: x > .5),
-        ts.RandCropByLabelClassesd(
-            keys=['img', 'mask'],
-            label_key='mask',
-            spatial_size=LITS17_CROP_SHAPE,
-            ratios=[0, 1],
-            num_classes=2,
-            num_samples=LITS17_NUM_CROPS,
-            image_key='mask',
-            image_threshold=0,
-        ),
-    ])
-}
-LITS17_NEW_DB_PATH = os.path.join(LITS17_SAVING_PATH, LITS17_NEW_DB_NAME)
+    # LITS17 Liver 1 32x80x80-crops dataset #######################################
 
-# Don't mofify the suffixes DB.TRAIN, DB.VALIDATION and DB.TEST
-LITS17_TRAIN_PATH = os.path.join(LITS17_NEW_DB_PATH, DB.TRAIN)
-LITS17_VAL_PATH = os.path.join(LITS17_NEW_DB_PATH, DB.VALIDATION)
-LITS17_TEST_PATH = os.path.join(LITS17_NEW_DB_PATH, DB.TEST)
+    LITS17_NEW_DB_NAME = 'LiTS17Liver-Pro'  # processed lits17 liver dataset name
+    LITS17_SIZE = (368, 368, -1)  # [height, width, scans]
+    LITS17_CROP_SHAPE = (32, 80, 80)  # [scans, heigh, width]
+    LITS17_NUM_CROPS = 1
+    LITS17_TRANSFORMS = {
+        'train': ts.Compose([
+            ts.ToTensord(keys=['img', 'mask']),
+            ts.CropForegroundd(keys=['img', 'mask'], source_key='img', select_fn=lambda x: x > .5),
+            ts.RandAxisFlipd(keys=['img', 'mask'], prob=.5),
+            ts.RandAffined(
+                keys=['img', 'mask'],
+                prob=1.,
+                rotate_range=0.261799,  # 15 degrees
+                # translate_range=[0.1*LITS17_SIZE[2], 0.1*LITS17_SIZE[0], 0.1*LITS17_SIZE[1]],
+                translate_range=[0*LITS17_SIZE[2], 0.1*LITS17_SIZE[0], 0.1*LITS17_SIZE[1]],
+                scale_range=((-0.3,  0.3), (-0.3, 0.3), (-0.3, 0.3)),
+                # scale_range=((-0.3, 0), (-0.3, 0), (-0.3, 0))
+                mode=["bilinear", "nearest"]
+            ),
+            ts.RandCropByLabelClassesd(
+                keys=['img', 'mask'],
+                label_key='mask',
+                spatial_size=LITS17_CROP_SHAPE,
+                ratios=[.5, .5],  # [0, 1],
+                num_classes=2,
+                num_samples=LITS17_NUM_CROPS,
+                image_key='img',  # 'mask',
+                image_threshold=0.38,  # 0,
+            ),
+        ]),
+        'valtest': ts.Compose([
+            ts.ToTensord(keys=['img', 'mask']),
+            ts.CropForegroundd(keys=['img', 'mask'], source_key='img', select_fn=lambda x: x > .5),
+            ts.RandCropByLabelClassesd(
+                keys=['img', 'mask'],
+                label_key='mask',
+                spatial_size=LITS17_CROP_SHAPE,
+                ratios=[0, 1],
+                num_classes=2,
+                num_samples=LITS17_NUM_CROPS,
+                image_key='mask',
+                image_threshold=0,
+            ),
+        ])
+    }
+    LITS17_NEW_DB_PATH = os.path.join(LITS17_SAVING_PATH, LITS17_NEW_DB_NAME)
 
+    # Don't mofify the suffixes DB.TRAIN, DB.VALIDATION and DB.TEST
+    LITS17_TRAIN_PATH = os.path.join(LITS17_NEW_DB_PATH, DB.TRAIN)
+    LITS17_VAL_PATH = os.path.join(LITS17_NEW_DB_PATH, DB.VALIDATION)
+    LITS17_TEST_PATH = os.path.join(LITS17_NEW_DB_PATH, DB.TEST)
 
-# LITS17 Lesion 16 32x160x160-crops dataset ###################################
+else:
+    # LITS17 Lesion 16 32x160x160-crops dataset ###################################
 
-# LITS17_NEW_DB_NAME = 'LiTS17Lesion-Pro'  # processed lits17 lesion dataset name
-# LITS17_NEW_CROP_DB_NAME = 'LiTS17Lesion-Pro-16PositiveCrops32x160x160'  # crop lits17 lesion dataset name
-# LITS17_SIZE = (368, 368, -2)  # [height, width, scans]
-# LITS17_CROP_SHAPE = (32, 160, 160)
-# LITS17_NUM_CROPS = 16
-# LITS17_TRANSFORMS = {
-#     'train': ts.Compose([
-#         ts.ToTensord(keys=['img', 'mask']),
-#         ts.RandAxisFlipd(keys=['img', 'mask'], prob=.5),
-#     ]),
-#     'valtest': ts.Compose([
-#         ts.ToTensord(keys=['img', 'mask']),
-#     ])
-# }
-# LITS17_NEW_DB_PATH = os.path.join(LITS17_SAVING_PATH, LITS17_NEW_DB_NAME)
-# LITS17_NEW_CROP_DB_PATH = os.path.join(LITS17_SAVING_PATH, LITS17_NEW_CROP_DB_NAME)
+    LITS17_NEW_DB_NAME = 'LiTS17Lesion-Pro'  # processed lits17 lesion dataset name
+    LITS17_NEW_CROP_DB_NAME = 'LiTS17Lesion-Pro-16PositiveCrops32x160x160'  # crop lits17 lesion dataset name
+    LITS17_SIZE = (368, 368, -2)  # [height, width, scans]
+    LITS17_CROP_SHAPE = (32, 160, 160)
+    LITS17_NUM_CROPS = 16
+    LITS17_TRANSFORMS = {
+        'train': ts.Compose([
+            ts.ToTensord(keys=['img', 'mask']),
+            ts.RandAxisFlipd(keys=['img', 'mask'], prob=.5),
+        ]),
+        'valtest': ts.Compose([
+            ts.ToTensord(keys=['img', 'mask']),
+        ])
+    }
+    LITS17_NEW_DB_PATH = os.path.join(LITS17_SAVING_PATH, LITS17_NEW_DB_NAME)
+    LITS17_NEW_CROP_DB_PATH = os.path.join(LITS17_SAVING_PATH, LITS17_NEW_CROP_DB_NAME)
 
-# Don't mofify the suffixes DB.TRAIN, DB.VALIDATION and DB.TEST
-# LITS17_TRAIN_PATH = os.path.join(LITS17_NEW_CROP_DB_PATH, DB.TRAIN)
-# LITS17_VAL_PATH = os.path.join(LITS17_NEW_CROP_DB_PATH, DB.VALIDATION)
-# LITS17_TEST_PATH = os.path.join(LITS17_NEW_CROP_DB_PATH, DB.TEST)
-
+    # Don't mofify the suffixes DB.TRAIN, DB.VALIDATION and DB.TEST
+    LITS17_TRAIN_PATH = os.path.join(LITS17_NEW_CROP_DB_PATH, DB.TRAIN)
+    LITS17_VAL_PATH = os.path.join(LITS17_NEW_CROP_DB_PATH, DB.VALIDATION)
+    LITS17_TEST_PATH = os.path.join(LITS17_NEW_CROP_DB_PATH, DB.TEST)
 
 ###############################################################################
 #                                  DEBUGGING                                  #

@@ -1,4 +1,4 @@
-gtorch_utils @ https://github.com/giussepi/gtorch_utils/archive/refs/tags/v0.1.0.tar.gz
+gtorch_utils @ https://github.com/giussepi/gtorch_utils/archive/refs/tags/v0.1.1.tar.gz
 Pillow==9.5.0
 scikit-image==0.20.0
 torchinfo==1.7.2

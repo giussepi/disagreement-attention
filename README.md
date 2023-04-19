@@ -44,7 +44,7 @@ In general terms the application contains:
    pip install -r requirements.txt
    ```
 
-6. Make a copy of the configuration file, review it thoroughly and update it properly (especially `PROJECT_PATH`, `CT82_SAVING_PATH` and `LITS17_SAVING_PATH`)
+6. Make a copy of the configuration file, review it thoroughly and update it properly (especially `PROJECT_PATH`, `CT82_SAVING_PATH`, `LITS17_SAVING_PATH` and `LITS17_CONFIG`)
 
    ```bash
    cp settings.py.template settings.py
